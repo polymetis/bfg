@@ -51,7 +51,7 @@ defmodule Bfg do
 
   defp basic_auth({user, password}) do
     auth= Base.encode64("#{user}:#{password}")
-    {"Authorization", auth}
+    {"Authorization", "Basic " <> auth}
   end
 
 end
