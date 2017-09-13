@@ -34,7 +34,7 @@ defmodule Bfg do
 
   def post(domain, port, slug, headers, body, auth) do
     auth_header = basic_auth(auth)
-    post(domain, port, slug, [headers | auth_header], body )
+    post(domain, port, slug, [auth_header | headers], body )
   end
 
 
