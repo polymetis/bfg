@@ -13,13 +13,12 @@ defmodule Bfg do
   end
 
   def get(domain, port, slug) do
-    {:ok, pid } = :gun.open(domain, port )
-    ref = :gun.get(pid, slug)
-    case :gun.await(pid, ref) do
-      {:response, :fin, _status, _headers} -> :no_data
-      {:response, :nofin, _status, _headers} ->  {:ok, _body} = :gun.await_body(pid, ref)
-    end
+    get(domain, port, slug, [])
+  end
 
+  def get(domain, port, slug, headers, auth) do
+    auth_header = basic_auth(auth)
+    get(domain, port, slug, [auth_header | headers])
   end
 
   def get(domain, port, slug, headers) do
@@ -47,6 +46,87 @@ defmodule Bfg do
       {:response, :nofin, _status, headers} -> {:ok, body} = :gun.await_body(pid, ref)
     end
   end
+
+  def delete(domain, port, slug, headers, auth) do
+    auth_header = basic_auth(auth)
+    delete(domain, port, slug, [auth_header | headers], body )
+  end
+
+
+  def delete(domain, port, slug, headers) do
+    {:ok, pid } = :gun.open(domain, port)
+    ref = :gun.delete(pid, slug, headers)
+
+    case :gun.await(pid, ref) do
+      {:response, :fin, _status, _headers} -> :no_data
+      {:response, :nofin, _status, headers} -> {:ok, body} = :gun.await_body(pid, ref)
+    end
+  end
+
+  def put(domain, port, slug, headers, body, auth) do
+    auth_header = basic_auth(auth)
+    put(domain, port, slug, [auth_header | headers], body )
+  end
+
+
+  def put(domain, port, slug, headers, body) do
+    {:ok, pid } = :gun.open(domain, port)
+    ref = :gun.put(pid, slug, headers, body)
+
+    case :gun.await(pid, ref) do
+      {:response, :fin, _status, _headers} -> :no_data
+      {:response, :nofin, _status, headers} -> {:ok, body} = :gun.await_body(pid, ref)
+    end
+  end
+
+  def options(domain, port, slug, headers, auth) do
+    auth_header = basic_auth(auth)
+    options(domain, port, slug, [auth_header | headers])
+  end
+
+
+  def options(domain, port, slug, headers) do
+    {:ok, pid } = :gun.open(domain, port)
+    ref = :gun.options(pid, slug, headers)
+
+    case :gun.await(pid, ref) do
+      {:response, :fin, _status, _headers} -> :no_data
+      {:response, :nofin, _status, headers} -> {:ok, body} = :gun.await_body(pid, ref)
+    end
+  end
+
+  def patch(domain, port, slug, headers, body, auth) do
+    auth_header = basic_auth(auth)
+    patch(domain, port, slug, [auth_header | headers] )
+  end
+
+
+  def patch(domain, port, slug, headers, body) do
+    {:ok, pid } = :gun.open(domain, port)
+    ref = :gun.post(pid, slug, headers, body)
+
+    case :gun.await(pid, ref) do
+      {:response, :fin, _status, _headers} -> :no_data
+      {:response, :nofin, _status, headers} -> {:ok, body} = :gun.await_body(pid, ref)
+    end
+  end
+
+  def head(domain, port, slug, headers, auth) do
+    auth_header = basic_auth(auth)
+    head(domain, port, slug, [auth_header | headers] )
+  end
+
+
+  def head(domain, port, slug, headers) do
+    {:ok, pid } = :gun.open(domain, port)
+    ref = :gun.head(pid, slug, headers, body)
+
+    case :gun.await(pid, ref) do
+      {:response, :fin, _status, _headers} -> :no_data
+      {:response, :nofin, _status, headers} -> {:ok, body} = :gun.await_body(pid, ref)
+    end
+  end
+
 
 
   defp basic_auth({user, password}) do
