@@ -3,6 +3,17 @@ defmodule Bfg do
   Documentation for Bfg.
   """
 
+  def get("http://" <> url) do
+    {domain, slug} = parse_url(url)
+    get(domain, 80, slug, [])
+  end
+
+
+  def get("https://" <> url) do
+    {domain, slug} = parse_url(url)
+    get(domain, 443, slug, [])
+  end
+
 
   def get(domain, port, slug) when is_binary(domain) do
     get(String.to_charlist(domain), port, slug)
@@ -133,5 +144,16 @@ defmodule Bfg do
     auth= Base.encode64("#{user}:#{password}")
     {"Authorization", "Basic " <> auth}
   end
+
+  defp parse_url(url) when is_binary(url) do
+    String.split(url, "/")
+    |> parse_url()
+  end
+
+  defp parse_url([domain | rest ]) do
+    [slug] = for item <- rest, do: item <> "/"
+    {String.to_charlist(domain), String.to_charlist(slug)}
+  end
+
 
 end
