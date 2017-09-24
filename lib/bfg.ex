@@ -149,7 +149,9 @@ defmodule Bfg do
     String.split(url, "/")
     |> parse_url()
   end
-
+  defp parse_url([domain | [] ]) do
+    {String.to_charlist(domain), '/'}
+  end
   defp parse_url([domain | rest ]) do
     [slug] = for item <- rest, do: item <> "/"
     {String.to_charlist(domain), String.to_charlist(slug)}
