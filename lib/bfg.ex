@@ -49,7 +49,7 @@ defmodule Bfg do
 
   def delete(domain, port, slug, headers, auth) do
     auth_header = basic_auth(auth)
-    delete(domain, port, slug, [auth_header | headers], body )
+    delete(domain, port, slug, [auth_header | headers])
   end
 
 
@@ -97,7 +97,7 @@ defmodule Bfg do
 
   def patch(domain, port, slug, headers, body, auth) do
     auth_header = basic_auth(auth)
-    patch(domain, port, slug, [auth_header | headers] )
+    patch(domain, port, slug, [auth_header | headers], body)
   end
 
 
@@ -119,7 +119,7 @@ defmodule Bfg do
 
   def head(domain, port, slug, headers) do
     {:ok, pid } = :gun.open(domain, port)
-    ref = :gun.head(pid, slug, headers, body)
+    ref = :gun.head(pid, slug, headers)
 
     case :gun.await(pid, ref) do
       {:response, :fin, _status, _headers} -> :no_data
