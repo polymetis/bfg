@@ -8,7 +8,6 @@ defmodule Bfg do
     get(domain, 80, slug, [])
   end
 
-
   def get("https://" <> url) do
     {domain, slug} = parse_url(url)
     get(domain, 443, slug, [])
@@ -51,6 +50,26 @@ defmodule Bfg do
 
   end
 
+  def post("http://" <> url, body) do
+    {domain, slug} = parse_url(url)
+    post(domain, 80, slug, [], body)
+  end
+
+  def post("https://" <> url, body) do
+    {domain, slug} = parse_url(url)
+    post(domain, 443, slug, [], body)
+  end
+
+  def post("http://" <> url, body, auth) do
+    {domain, slug} = parse_url(url)
+    post(domain, 80, slug, [], body, auth)
+  end
+
+  def post("https://" <> url, body, auth) do
+    {domain, slug} = parse_url(url)
+    post(domain, 443, slug, [], body, auth)
+  end
+
   def post(domain, port, slug, headers, body, auth) do
     auth_header = basic_auth(auth)
     post(domain, port, slug, [auth_header | headers], body )
@@ -66,6 +85,27 @@ defmodule Bfg do
       {:response, :nofin, _status, headers} -> {:ok, body} = :gun.await_body(pid, ref)
     end
   end
+
+  def delete("http://" <> url) do
+    {domain, slug} = parse_url(url)
+    delete(domain, 80, slug, [])
+  end
+
+  def delete("https://" <> url) do
+    {domain, slug} = parse_url(url)
+    delete(domain, 443, slug, [])
+  end
+
+  def delete("http://" <> url, auth) do
+    {domain, slug} = parse_url(url)
+    delete(domain, 80, slug, [], auth)
+  end
+
+  def delete("https://" <> url, auth) do
+    {domain, slug} = parse_url(url)
+    delete(domain, 443, slug, [], auth)
+  end
+
 
   def delete(domain, port, slug, headers, auth) do
     auth_header = basic_auth(auth)
