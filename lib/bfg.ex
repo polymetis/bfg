@@ -14,6 +14,15 @@ defmodule Bfg do
     get(domain, 443, slug, [])
   end
 
+  def get("http://" <> url, auth) do
+    {domain, slug} = parse_url(url)
+    get(domain, 80, slug, [], auth)
+  end
+
+  def get("https://" <> url, auth) do
+    {domain, slug} = parse_url(url)
+    get(domain, 443, slug, [], auth)
+  end
 
   def get(domain, port, slug) when is_binary(domain) do
     get(String.to_charlist(domain), port, slug)
